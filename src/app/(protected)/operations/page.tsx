@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { format, parseISO, addDays } from 'date-fns';
-import { ChevronLeft, ChevronRight, Plus, Search } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Search, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { Input, Select } from '@/components/ui/Input';
@@ -45,6 +45,7 @@ interface Customer {
   creditPercent: number;
   dailyRate: number;
   type: string;
+  expiryDate: string | null;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -380,6 +381,16 @@ function NewSessionModal({
             </div>
           )}
         </div>
+
+        {/* Expiry warning */}
+        {selectedCustomer?.expiryDate && new Date(selectedCustomer.expiryDate) < new Date() && (
+          <div className="flex items-center gap-2 bg-yellow-50 border border-yellow-300 px-3 py-2 rounded text-yellow-800 text-sm">
+            <AlertTriangle size={16} className="shrink-0" />
+            <span>
+              <strong>Account expired</strong> on {format(parseISO(selectedCustomer.expiryDate), 'd MMM yyyy')}. Confirm before proceeding.
+            </span>
+          </div>
+        )}
 
         <div className="grid grid-cols-2 gap-3">
           <Input label="Customer Name *" value={form.customerName} onChange={(e) => setForm((f) => ({ ...f, customerName: e.target.value }))} />

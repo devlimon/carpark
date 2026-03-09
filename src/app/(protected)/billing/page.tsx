@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { format, subMonths } from 'date-fns';
-import { Download, Send, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Download, FileText, Send, CheckCircle, XCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 
@@ -88,6 +88,18 @@ export default function BillingPage() {
     URL.revokeObjectURL(url);
   }
 
+  async function downloadPdf() {
+    const res = await fetch(`/api/reports/on-account?period=${period}&export=pdf`);
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `on-account-${period}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   const totalOutstanding = details.reduce((s, d) => s + d.customer.balance, 0);
   const totalThisMonth = details.reduce((s, d) => s + d.monthlyTotal, 0);
 
@@ -104,6 +116,9 @@ export default function BillingPage() {
           />
           <Button variant="secondary" size="sm" onClick={downloadCsv}>
             <Download size={15} /> CSV
+          </Button>
+          <Button variant="secondary" size="sm" onClick={downloadPdf}>
+            <FileText size={15} /> PDF
           </Button>
           <div className="flex items-center gap-2">
             <input

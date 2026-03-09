@@ -31,6 +31,7 @@ Edit `.env.local` and fill in all values:
 | `SMTP_FROM` | Display name + email for outgoing mail |
 | `CRON_SECRET` | 32+ byte random hex string for cron endpoint auth |
 | `NEXT_PUBLIC_BASE_URL` | `http://localhost:3000` locally, your domain in prod |
+| `CARPARK_NAME` | Display name shown in emails and PDF reports |
 
 Generate random secrets quickly:
 ```bash

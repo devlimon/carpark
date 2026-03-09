@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { format, subMonths } from 'date-fns';
-import { Download, TrendingUp, Users, Car, Receipt } from 'lucide-react';
+import { Download, FileText, TrendingUp, Users, Car, Receipt } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   LineChart, Line,
@@ -66,6 +66,18 @@ export default function ReportsPage() {
     URL.revokeObjectURL(url);
   }
 
+  async function downloadPdf() {
+    const res = await fetch(`/api/reports/${activeReport}?period=${period}&export=pdf`);
+    if (!res.ok) return;
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${activeReport}-${period}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-3">
@@ -79,6 +91,9 @@ export default function ReportsPage() {
           />
           <Button variant="secondary" size="sm" onClick={downloadCsv}>
             <Download size={15} /> CSV
+          </Button>
+          <Button variant="secondary" size="sm" onClick={downloadPdf}>
+            <FileText size={15} /> PDF
           </Button>
         </div>
       </div>
